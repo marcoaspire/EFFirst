@@ -1,8 +1,11 @@
-/packages
-/Properties
+/packages/*
+/Properties/*
 /obj
+/obj/*
 /bib
+/bib/*
 /Scripts
+/Scripts/*
 packages.config
 Web.config
 Web.Debug.config
