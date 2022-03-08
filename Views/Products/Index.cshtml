@@ -1,0 +1,146 @@
+﻿@model IEnumerable<EFFirst.Models.Product>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutPage1.cshtml";
+}
+
+<h2>Products</h2>
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+
+
+<form class="d-flex" action="/products/search">
+    @Html.TextBox("search", ViewBag.search as string, new { @class = "form-control me-2", placeholder = "Search a product" })
+    @*<input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="search" value="@ViewBag.search">*@
+    <button class="btn btn-outline-success" type="submit">Search</button>
+</form>
+
+
+<table class="table">
+    <tr>
+        <th>
+            @{
+                if (ViewBag.IconClass == "bi bi-arrow-up")
+                {
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-up" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z" />
+                    </svg>
+                    <a href="/products/index?SortColumn=ProductName&IconClass=bi bi-arrow-down&PageNo=1">@Html.DisplayNameFor(model => model.ProductName)</a>
+                }
+                else
+                {
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z" />
+                    </svg>
+                    <a href="/products/index?SortColumn=ProductName&IconClass=bi bi-arrow-up&PageNo=1">@Html.DisplayNameFor(model => model.ProductName)</a>
+                }
+            }
+
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Price)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DateOfPurchase)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AvailabilityStatus)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CategoryID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.BrandID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Active)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProductName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateOfPurchase)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AvailabilityStatus)
+            </td>
+            <td>
+                @*@Html.DisplayFor(modelItem => item.CategoryID.HasValue ? item.Category.CategoryName: "Other")*@
+                @if (item.CategoryID.HasValue)
+                {
+                    @item.Category.CategoryName
+                }
+            </td>
+            <td>
+                @if (item.Brand != null)
+                {
+                    @item.Brand.BrandName
+                }
+                @*@Html.DisplayFor(modelItem => item.Brand.BrandName)*@
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Active)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.ProductID, controller = "Products" }) |
+                @Html.ActionLink("Details", "Details", new { id = item.ProductID }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.ProductID }, new { onclick = "return confirm('Are you sure you wish to delete this article?');" })
+            </td>
+        </tr>
+    }
+    <tr>
+        <td colspan="9">
+            @{
+                int PrevPageNo = ViewBag.PageNo - 1;
+                if (PrevPageNo < 1)
+                {
+                    PrevPageNo = 1;
+                }
+                int NextPageNo = ViewBag.PageNo + 1;
+                if (NextPageNo > ViewBag.NoOfPages)
+                {
+                    NextPageNo = ViewBag.NoOfPages;
+                }
+            }
+            <ul class="pagination">
+                <li class="page-item">
+                    <a class="page-link" href="/products/index?SortColumn=@ViewBag.SortColumn&IconClass=@ViewBag.IconClass&PageNo=@PrevPageNo" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                </li>
+                @for (int i = 0; i < ViewBag.NoOfPages; i++)
+                {
+                    if (ViewBag.PageNo == (i + 1))
+                    {
+                        <li class="page-item active"><a class="page-link" href="/products/index?SortColumn=@ViewBag.SortColumn&IconClass=@ViewBag.IconClass&PageNo=@(i+1)">@(i+1)</a></li>
+
+                    }
+                    else
+                    {
+
+                        <li class="page-item"><a class="page-link" href="/products/index?SortColumn=@ViewBag.SortColumn&IconClass=@ViewBag.IconClass&PageNo=@(i+1)">@(i+1)</a></li>
+                    }
+                }
+                <li class="page-item">
+                    <a class="page-link" href="/products/index?SortColumn=@ViewBag.SortColumn&IconClass=@ViewBag.IconClass&PageNo=@NextPageNo" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </li>
+            </ul>
+        </td>
+    </tr>
+
+</table>

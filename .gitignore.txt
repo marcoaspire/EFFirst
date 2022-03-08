@@ -1,0 +1,9 @@
+/packages
+/Properties
+/obj
+/bib
+/Scripts
+packages.config
+Web.config
+Web.Debug.config
+Web.Release.config
